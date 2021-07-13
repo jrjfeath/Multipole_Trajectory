@@ -1,0 +1,53 @@
+#Molecule information |j = n, m = |j|, Ω = Σ + Λ, ε = -1 (f)>
+mass : 30              #m, Mass of molecule (u)
+velocity : 617         #v, Velocity of molecule (m/s)
+dipole : 0.1595        #μ, Dipole of molecule (D)
+j : 0.5                #j, rotational energy level
+m : 0.5                #m, magnetic quantum number, generally m = |j|
+epi : -1.0             #ε, lambda (Λ) doublet state, ε = -1 (f)
+lambda : 0.5           #Ω, spin-orbit quantum number, Ω = Σ + Λ
+fwhmv : 20.0           #Width of the velocity (m/s)
+
+#Voltage conditions
+Vstart : 500           #What voltage to start at, cannot = 0 (V)
+Vfinal : 30000         #What voltage to end on (V)
+Vstep : 100            #What voltage to step by (V)
+calcv : True           #Calculate the optimum voltage on the multipole (T/F)
+setV : 10500           #if calcv False, specify optimal voltage here
+
+#Instrument
+lsource : 80           #Source Length (mm), Distance from skimmer to multipole
+lcollision : 1000      #Distance from end of last multipole to collision area (mm)
+fwhmsk : 0.2           #Width of the skimmer angles (degrees), see additional info
+
+#Multipole information
+#Multiple systems can be included, an example of a single multipole and
+#dual multipole setup can be found in Addition info.
+multipole:
+  hexapole:
+    size: 6           #Size of multipole, i.e hexapole = 6
+    d0: 14            #Distance between rods (mm)
+    lpole: 1650       #Length of multipole rods (mm)
+    minp: 10          #Estimated shortest lpole (mm), see search info
+    maxp: 2500        #Estimated longest lpole (mm), see search info
+    ldist: 0          #Distance to the next multipole (mm)
+    mind: 10          #Estimated shortest ldist (mm), see search info
+    maxd: 2500        #Estimated longest ldist (mm), see search info    
+
+#Source position of molecules out of skimmer
+srcd : "s"             #Distribution: single (s), uniform (u), gaussian (g) 
+fwhmsrc : 0.0          #Size of distribution, how far from 0? (mm)
+
+#Simulation information
+est : 100              #Number of molecules to use when estimating voltages
+calct : False          #Calculate the trajectory through the multipole (T/F)
+traj : 1               #Number of molecules to fly through setup
+
+#Search for best experimental lengths for tranmission?
+#Read the Search_Information.txt before using this feature
+search : False
+sd : 10                #What distance between measurements should be used (mm)
+lmax : 3000            #Maximum experiment distance
+nproc : 12             #Number of cores to use in job
+
+

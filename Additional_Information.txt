@@ -1,0 +1,66 @@
+Ω = Σ + Λ
+Σ is the spin angular projection, +/- S (spin angular momentum)
+Λ is the electronic angular projection, +/- L (electronic angular momentum)
+
+--- Dipole moments ---
+Dipole moment of NO = 0.1595
+Dipole moment of NH3 = 1.47
+https://cccbdb.nist.gov/xp1.asp?prop=7
+
+--- Velocity of molecule ---
+|v| = ((2kB/m)(γ/(γ-1))T)**0.5
+γ Cp/Cv, ratio of heat capacities, γ ~ 5/3 for atom and ~ 7/5 for diatom
+
+--- Force of multipole with respect to position ---
+Vstark = (μ) (Ecosθ_(μE)), first order stark interaction between molecule and field
+Where θ_(μE) is the polar angle between the dipole and the electric field
+
+In an ideal multipole the magnitude of the field at distance R is:
+E = (-n)(V)((R**(n-1)) / (R0)**n)
+R is the distance from the centre of the multipole
+R0 is the radius of the multipole
+
+Combining both equations gives:
+F(R) = (μ) (cosθ_(μE)) (dE/dR)
+Where <cosθ_(μE)> ~ ((ε|mΩ|) / (j(j+1)))
+F(R) = (μ) ((-n(n-1)) (V) (R**(n-2))/R0**n) ((ε|mΩ|) / (j(j+1)))
+Factoring out R allows for determination of force with respect to position
+
+More information concerning multipole theory (eq. 35): 
+https://cds.cern.ch/record/1333874/files/1103.0713.pdf
+
+For more information see Section 3.3 (pgs 60-64) from Victoria Walpole's thesis
+--- End of multipole force calculations --- 
+
+Beam density
+https://aip.scitation.org/doi/10.1063/1.4913251
+
+#Angle of beam skimmer, ideally 40 - 60 degrees
+#https://pubs.acs.org/doi/abs/10.1021/jp201342u
+#This should result in a FWHM ~ 10 degrees
+#https://www.hindawi.com/journals/ac/2014/636042/
+#A value of 0.2 is used to create a fine beam, much more representative of multipole
+#but unrepresentative of actual conditions, easier to find best multipole conditions
+
+--- Multipole setup examples ---
+Single Multipole > 
+multipole:
+  hexapole:
+    size: 6           #Size of multipole, i.e hexapole = 6
+    d0: 14            #Distance between rods (mm)
+    lpole: 1650       #Length of multipole rods (mm)
+    ldist: 10         #Distance to the next multipole (mm)
+
+Double Multipole > 
+multipole:
+  22pole:
+    size: 22          
+    d0: 40            
+    lpole: 30
+    ldist: 10          
+  hexapole:
+    size: 6           
+    d0: 14            
+    lpole: 30
+    ldist: 0                
+
