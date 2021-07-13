@@ -1,7 +1,7 @@
 # Multipole_Trajectory
 Used to calculate the trajectory of molecules through a multipole or multipoles.
 Has the following requirements:
->= python 3.6
+python 3.6+
 pip install numpy
 pip install matplotlib
 
