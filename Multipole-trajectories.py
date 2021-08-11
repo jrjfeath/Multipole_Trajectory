@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import psutil
 
+from Search_Algorithm import setup_search # pylint: disable=import-error
+
 def calculate_c(d,n,r0):
     '''Calculate the force applied to the molecule done by the multipole.\n
        See additional info for more details into the method.
@@ -195,6 +197,7 @@ def load_input():
     d['lsource']/=1000
     d['lcollision']/=1000
     d['lmax']/=1000
+    d['lmax']-=d['lsource'] #subtract source from max
     d['sd']/=1000
     return d
 
@@ -224,12 +227,6 @@ def setup():
     d['counts'] = counts
     return d
 
-def randomize_distances(d):
-    md = d['lmax'] #max distance
-    for key in d['multipole']:
-        d['multipole'][key]['lpole']
-    return d
-
 if __name__ == "__main__":
     d = setup()
     #Make a list of the number of molecules at each position
@@ -247,7 +244,7 @@ if __name__ == "__main__":
         title = 'What percent of molecules are transmitted to collision region?'
         plot_data(x,y,xl,yl,title)
     else:
-        e = randomize_distances(copy.deepcopy(d))
+        e = setup_search(copy.deepcopy(d))
         '''#Setup multiprocessing to speed up process
         q_in = multiprocessing.Queue()
         q_out = multiprocessing.Queue()
