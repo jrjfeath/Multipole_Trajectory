@@ -40,7 +40,7 @@ def scan_voltage(d):
             for vindex, voltage in enumerate(d['V']):
                 #Track how much di should increase by this loop
                 dii = 0
-                
+
                 #On the first multipole we want to use our initial velocities
                 if mindex == 0:
                     #Calculate our trajectory at the end of the multipole
@@ -76,19 +76,22 @@ def scan_voltage(d):
                         r0
                     )
                 
+                #Write entry data to densities
+                densities[vindex][di+dii] += info['enter']
+                dii+=1
+
                 #overwrite velocity and position data
                 vra[vindex] = [info['velyf'],info['velzf'],info['ryhex'],info['rzhex']]
                 vsa[vindex] = info['exit']
 
-                #Write data to densities
-                densities[vindex][di+dii] += info['enter']
-                dii+=1
-                densities[vindex][di+dii] += info['exit']
-                dii+=1
+                #If molecule/ion does not exit multipole continue to next voltage
+                if info['exit'] == 0: continue
 
                 #If the multipole has a pinhole after it calculate success
-                if p.get('pinhole') == True:
-                    collided = collision_trajectory(
+                #Overwrite the exit parameter to make data storage less cumbersome
+                if p.get('pin_pos') != None:
+                    #If the molecule/ion passes region returns 1
+                    info['exit'] = check_collision(
                         velocity['vx'],
                         vra[vindex][0], 
                         vra[vindex][1], 
@@ -97,9 +100,13 @@ def scan_voltage(d):
                         p['pin_pos'],
                         p['pin_r']
                     )
-                    densities[vindex][di+dii] += collided
-                    vsa[vindex] = collided
-                    dii+=1
+
+                #overwrite the position data on if it travels through pinhole
+                vsa[vindex] = info['exit']
+
+                #Write exit data to densities
+                densities[vindex][di+dii] += info['exit']
+                dii+=1
 
                 #If we are on the last multipole calculate final position at
                 #the collision centre if molecule exited multipole

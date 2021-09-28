@@ -1,7 +1,7 @@
 #Molecule/Ion information |j = n, m = |j|, Ω = Σ + Λ, ε = -1 (f)>
 charge: 0              #q, charge of species
 mass : 142             #m, Mass of molecule (u)
-velocity : 367         #v, Velocity of molecule (m/s)
+velocity : 376         #v, Velocity of molecule (m/s) 
 dipole : 1.62          #μ, Dipole of molecule (D)
 j : 1                  #j, rotational energy level
 m : 1                  #m, magnetic quantum number, generally m = |j|
@@ -28,12 +28,12 @@ lcollision : 100      #Distance from end of last multipole to collision area (mm
 
 #Do you want to determine an optimal voltage?
 calcv : True           #Calculate the optimum voltage on the multipole (T/F)
-vest : 1000            #Number of ions/molecules to use when estimating voltages
+vest : 1000           #Number of ions/molecules to use when estimating voltages
 
 #Do you want to determine the trajectory of species in your setup?
 calct : True          #Calculate the trajectory through the multipole (T/F)
-setV : 2000           #if calct True, specify optimal voltage here
-traj : 200             #Number of ions/molecules to fly through setup
+setV : 5000           #if calct True, specify optimal voltage here
+traj : 500             #Number of ions/molecules to fly through setup
 plot_2d_t : True       #Plot trajectories on a 2d plot
 plot_3d_t : False       #Plot trajectories on a 3d plot
 
@@ -43,14 +43,14 @@ plot_3d_t : False       #Plot trajectories on a 3d plot
 multipole:
   hexapole:
     size: 6           #Size of multipole, i.e hexapole = 6
-    d0: 5.3            #Distance between rods (mm)
+    d0: 7.1            #Distance between rods (mm)
     lpole: 300        #Length of multipole rods (mm)
-    ldist: 120        #Distance to the next multipole (mm)
-    pin_pos: 60       #Position of the pinhole after the multipole (mm)
-    pin_r: 10.4        #Radius of the pinhole in mm
+    ldist: 70        #Distance to the next multipole (mm)
+    pin_pos: 35       #Position of the pinhole after the multipole (mm)
+    pin_r: 0.6        #Radius of the pinhole in mm
   hexapole2:
     size: 6           #Size of multipole, i.e hexapole = 6
-    d0: 5.3            #Distance between rods (mm)
+    d0: 7.1            #Distance between rods (mm)
     lpole: 300        #Length of multipole rods (mm)
     ldist: 0          #Distance to the next multipole (mm)
 

@@ -4,6 +4,11 @@ def calculate_velocity(m,y,T=328):
     and mass. The ratio for monoatomic species is 5/3 and for polyatomic species
     is 7/5.\n The temperature is assumed to be 328 K based off comparison to 
     experimental data.
+
+    367 - 100% CH3I
+    977 - 100% ND3
+    584 - 100% Ar
+    403 - 100% Kr
     '''
     T = 328
     kB = 1.3806503e-23
@@ -12,4 +17,4 @@ def calculate_velocity(m,y,T=328):
     print(v)
 
 if __name__ == "__main__":
-    calculate_velocity(142,7/5,T=328)
+    calculate_velocity(20,7/5,T=328)
