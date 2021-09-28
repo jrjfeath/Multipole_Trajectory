@@ -11,6 +11,12 @@ https://cccbdb.nist.gov/xp1.asp?prop=7
 |v| = ((2kB/m)(γ/(γ-1))T)**0.5
 γ Cp/Cv, ratio of heat capacities, γ ~ 5/3 for atom and ~ 7/5 for diatom
 
+--- Products of Moments of Inertia ---
+NO: Ib = 11.77
+ND3: Ib = 57.94
+CH3I = 
+https://cccbdb.nist.gov/expdatax.asp
+
 --- Force of multipole with respect to position ---
 Vstark = (μ) (Ecosθ_(μE)), first order stark interaction between molecule and field
 Where θ_(μE) is the polar angle between the dipole and the electric field

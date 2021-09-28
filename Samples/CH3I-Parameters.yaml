@@ -1,0 +1,51 @@
+#Molecule/Ion information |j = n, m = |j|, Ω = Σ + Λ, ε = -1 (f)>
+charge: 0              #q, charge of species
+mass : 142             #m, Mass of molecule (u)
+velocity : 367         #v, Velocity of molecule (m/s)
+dipole : 1.62          #μ, Dipole of molecule (D)
+j : 1                  #j, rotational energy level
+m : 1                  #m, magnetic quantum number, generally m = |j|
+k : 1                  #k, projection of total angular momentum
+b : 0.25021            #Rotational Constant (cm-1)
+fwhmv : 20.0           #Width of the velocity (m/s)
+
+#Voltage conditions
+Vstart : 100           #What voltage to start at, cannot = 0 (V)
+Vfinal : 20000         #What voltage to end on (V)
+Vstep : 100            #What voltage to step by (V)
+Vfrequency : 1.1E6     #RF frequency (Hz) for charged species
+
+#Skimmer conditions
+skmr_radius : 0.5      #Skimmer radius in mm
+skmr_pos : [0,0]       #Centre position of molecules out of skimmer
+skmr_dist : "s"        #Distribution: single (s), uniform (u), gaussian (g) 
+fwhmsk : 0.2           #Width of the skimmer angles (degrees), see additional info
+
+#Instrument distances
+lskimmer : 30          #Distance from valve to skimmer
+lsource : 80           #Source Length (mm), Distance from skimmer to multipole
+lcollision : 100      #Distance from end of last multipole to collision area (mm)
+
+#Do you want to determine an optimal voltage?
+calcv : True           #Calculate the optimum voltage on the multipole (T/F)
+vest : 1000            #Number of ions/molecules to use when estimating voltages
+
+#Do you want to determine the trajectory of species in your setup?
+calct : False          #Calculate the trajectory through the multipole (T/F)
+setV : 10800           #if calct True, specify optimal voltage here
+traj : 200             #Number of ions/molecules to fly through setup
+plot_2d_t : True       #Plot trajectories on a 2d plot
+plot_3d_t : False       #Plot trajectories on a 3d plot
+
+#Multipole information
+#Multiple systems can be included, an example of a single multipole and
+#dual multipole setup can be found in Addition info.
+multipole:
+  hexapole:
+    size: 6           #Size of multipole, i.e hexapole = 6
+    d0: 14.0          #Distance between rods (mm)
+    lpole: 600       #Length of multipole rods (mm)
+    ldist: 0          #Distance to the next multipole (mm)
+
+
+
