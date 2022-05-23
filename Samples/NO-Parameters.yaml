@@ -10,6 +10,7 @@ b : 1.67195            #Rotational Constant (cm-1)
 epi : -1.0             #ε, lambda (Λ) doublet state, ε = -1 (f)
 omega : 0.5            #Ω, spin-orbit quantum number, Ω = Σ + Λ
 fwhmv : 20.0           #Width of the velocity (m/s)
+w_inv : 0.01183666     #Lambda doublet splitting factor for j = 0.5 (cm-1)
 
 #Voltage conditions
 Vstart : 100           #What voltage to start at, cannot = 0 (V)
@@ -30,7 +31,7 @@ lcollision : 1000      #Distance from end of last multipole to collision area (m
 
 #Do you want to determine an optimal voltage?
 calcv : True          #Calculate the optimum voltage on the multipole (T/F)
-vest : 1000            #Number of ions/molecules to use when estimating voltages
+vest : 10000            #Number of ions/molecules to use when estimating voltages
 
 #Do you want to determine the trajectory of species in your setup?
 calct : False           #Calculate the trajectory through the multipole (T/F)

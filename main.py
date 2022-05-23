@@ -6,7 +6,7 @@ from Subroutines.scan_voltage import scan_voltage
 
 cwd = os.getcwd()
 
-filename = '/Samples/CH3I-Double-Parameters.yaml'
+filename = '/Samples/NO-Parameters.yaml'
 
 if __name__ == "__main__":
     d = setup(f'{cwd}/{filename}')

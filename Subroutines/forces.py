@@ -30,10 +30,23 @@ def first_order(d,n,r0):
     #interaction energy (w) in units of cm^-1 (cm_1)
     #E = (m^2 * kg * s_3 * A_1) / cm_1, dip = C * m => A * s * m
     for E in d['V']:
-        #force is in units of m^3 * kg * s_2 * cm_1 (J * cm-1)
-        w = abs(dip * E * m * k) / (j * (j+1))
-        #divide by hc to obtain units in cm_1
-        w_e[E] = w / hc
+        #Does the molecule have inversion or doublet splitting?
+        try: 
+            #w_inv in units of cm_1, multiply by hc to get m^3 * kg * s_2 * cm_1
+            w_inv = d['w_inv'] * hc
+            l = ((w_inv) / 2) ** 2
+            #r in units of m^3 * kg * s_2 * cm_1
+            r = ((dip * E) * ((m * k) / (j * (j + 1)))) ** 2
+            w = (l + r)**0.5
+            w_e[E] = w / hc # convert J to cm-1
+
+        #If no splitting use generic first order stark equation
+        except KeyError:
+            #w in units of m^3 * kg * s_2 * cm_1
+            w = abs(dip * E * m * k) / (j * (j+1))
+            #divide by hc to obtain units in cm_1
+            w_e[E] = w / hc
+
         #To apply multipole effects introduce mass, radius, and size (n) = s_2
         #Get units of s_1 (in this case E = U so units of m^3 * kg * s_2)
         #See Ref. 1 for additional details (pg. 7666 - 7667)

@@ -8,6 +8,7 @@ m : 1                  #m, magnetic quantum number, generally m = |j|
 k : 1                  #k, projection of total angular momentum
 b : 5.14280            #Rotational Constant (cm-1)
 fwhmv : 20.0           #Width of the velocity (m/s)
+w_inv : 0.053          #Inversion splitting in ND3 in cm-1
 
 #Voltage conditions
 Vstart : 100           #What voltage to start at, cannot = 0 (V)
@@ -32,7 +33,7 @@ vest : 1000            #Number of ions/molecules to use when estimating voltages
 
 #Do you want to determine the trajectory of species in your setup?
 calct : True           #Calculate the trajectory through the multipole (T/F)
-setV : 5100            #if calct True, specify optimal voltage here
+setV : 4800            #if calct True, specify optimal voltage here
 traj : 200             #Number of ions/molecules to fly through setup
 plot_2d_t : True       #Plot trajectories on a 2d plot
 plot_3d_t : False      #Plot trajectories on a 3d plot
