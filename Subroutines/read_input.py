@@ -3,6 +3,7 @@ import os
 import sys
 import yaml
 import Subroutines.forces as forces
+import numpy as np
 
 def setup(filename):
     '''
@@ -65,8 +66,8 @@ def setup(filename):
             w_e2, sqc2, invc2 = forces.second_order(d,n,r0)
             
             #Add the effects together
-            sqc = sqc1 + sqc2
-            invc = invc1 + invc2
+            sqc = np.add(sqc1,sqc2)
+            invc = np.add(invc1,invc2)
             
             if d['Stark_Calculated'] == False:
                 #Write to the string holding stark data

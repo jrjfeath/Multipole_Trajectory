@@ -23,6 +23,8 @@ def multipole_trajectory(dist,lpole,vel,vy,vz,ry,rz,sqc,invc,r0):
     
     #Calculate position & velocity at end of hexapole
     thex = lpole/vel # thex = time spent in hexapole 
+    #Calculate the trajectory of a molecule/atom through the multipole
+    #using simple harmonic motion
     ryhex = (ry0 * cos(sqc * thex)) + (vy * invc * sin(sqc * thex))
     rzhex = (rz0 * cos(sqc * thex)) + (vz * invc * sin(sqc * thex))
     #Check if the molecule will exit the hexapole
