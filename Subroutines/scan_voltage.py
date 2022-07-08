@@ -3,7 +3,7 @@ import Subroutines.drawing as drawing
 
 from Subroutines.check_collision import check_collision
 from Subroutines.multipole_trajectory import multipole_trajectory
-from Subroutines.skimmer_trajectory import skimmer_trajectory
+from Subroutines.skimmer_trajectory_original import skimmer_trajectory
 
 def scan_voltage(d):
     '''
@@ -36,6 +36,7 @@ def scan_voltage(d):
             #fetch multipole parameters
             p = d['multipole'][m]
             sqc , invc, r0, ldist = p['sqc'], p['invc'],  p['r0'], p['ldist']
+
             #Loop through each voltage
             for vindex, voltage in enumerate(d['V']):
                 #Track how much di should increase by this loop

@@ -9,12 +9,12 @@ k : 0                  #k, projection of total angular momentum
 b : 1.67195            #Rotational Constant (cm-1)
 epi : -1.0             #ε, lambda (Λ) doublet state, ε = -1 (f)
 omega : 0.5            #Ω, spin-orbit quantum number, Ω = Σ + Λ
-fwhmv : 20.0           #Width of the velocity (m/s)
-w_inv : 0.01183666     #Lambda doublet splitting factor for j = 0.5 (cm-1)
+fwhmv : 5.0           #Width of the velocity (m/s)
+#w_inv : 0.01183666     #Lambda doublet splitting factor for j = 0.5 (cm-1)
 
 #Voltage conditions
 Vstart : 100           #What voltage to start at, cannot = 0 (V)
-Vfinal : 20000         #What voltage to end on (V)
+Vfinal : 20100         #What voltage to end on (V)
 Vstep : 100            #What voltage to step by (V)
 Vfrequency : 1.1E6     #RF frequency (Hz) for charged species
 
@@ -36,7 +36,7 @@ vest : 10000            #Number of ions/molecules to use when estimating voltage
 #Do you want to determine the trajectory of species in your setup?
 calct : False           #Calculate the trajectory through the multipole (T/F)
 setV : 10300           #if calct True, specify optimal voltage here
-traj : 200             #Number of ions/molecules to fly through setup
+traj : 100             #Number of ions/molecules to fly through setup
 plot_2d_t : True       #Plot trajectories on a 2d plot
 plot_3d_t : True       #Plot trajectories on a 3d plot
 

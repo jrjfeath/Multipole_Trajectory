@@ -1,7 +1,7 @@
 import os 
 
 from Subroutines.read_input import setup
-from Subroutines.scan_trajectory import scan_trajectory
+from Subroutines.scan_voltage_opt import scan_trajectory
 from Subroutines.scan_voltage_opt import scan_voltage
 
 cwd = os.getcwd()

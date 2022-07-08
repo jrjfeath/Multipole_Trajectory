@@ -17,4 +17,4 @@ def calculate_velocity(m,y,T=328):
     print(v)
 
 if __name__ == "__main__":
-    calculate_velocity(20,7/5,T=328)
+    calculate_velocity(84,5/3,328)

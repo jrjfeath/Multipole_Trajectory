@@ -24,6 +24,11 @@ def setup(filename):
     atomic_mass = 1.6605390666e-27 #(kg)
     debye = 3.33654e-30 #Cm, electric dipole moment
     ec = 1.602176462e-19 # electron charge (C/e)
+    #Speed of light
+    c = 299792458  #m * s_1
+    #Plank's constant
+    h = 6.626068e-34 #m^2 * kg * s_1
+    hc = c * h
     d['tpi'] = 2 * math.pi #frequency per cycle(rad/cycle)
     
     #Apply SI conversions
@@ -62,12 +67,25 @@ def setup(filename):
             sqc, invc = forces.calculate_d(d,n,r0)
         else: 
             #Calculate the first and second stark effects and add them
-            w_e1, sqc1, invc1 = forces.first_order(d,n,r0)
-            w_e2, sqc2, invc2 = forces.second_order(d,n,r0)
+            w_e1 = forces.first_order(d,n,r0)
+            w_e2 = forces.second_order(d,n,r0)
             
-            #Add the effects together
-            sqc = np.add(sqc1,sqc2)
-            invc = np.add(invc1,invc2)
+            #Add the stark effects together
+            w = {}
+            sqc, invc = [], []
+            for E in d['V']:
+                w[E] = w_e1[E] + w_e2[E]
+                #To apply multipole effects introduce mass, radius, and size (n) = s_2
+                #Get units of s_1 (in this case E = U so units of m^3 * kg * s_2)
+                #See Ref. 1 for additional details (pg. 7666 - 7667)
+                s_1 = np.sqrt(w[E] * hc * ((n * (n-1)) / (d['mass'] * r0 * r0 * r0)))
+                sqc.append(s_1)
+                #get units of s by taking the inverse of s_1
+                if s_1 == 0.0:
+                    s = 0
+                else:
+                    s = 1 / s_1
+                invc.append(s)
             
             if d['Stark_Calculated'] == False:
                 #Write to the string holding stark data

@@ -1,4 +1,12 @@
 from math import sqrt
+import numpy as np
+import sys
+
+c = np.array([1,2,3,4])
+bad = [0,1]
+print(c[...,~0])
+
+sys.exit()
 
 T = 328
 kB = 1.3806503e-23

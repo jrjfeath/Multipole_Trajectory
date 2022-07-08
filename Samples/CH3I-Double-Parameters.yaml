@@ -1,7 +1,7 @@
 #Molecule/Ion information |j = n, m = |j|, Ω = Σ + Λ, ε = -1 (f)>
 charge: 0              #q, charge of species
 mass : 142             #m, Mass of molecule (u)
-velocity : 376         #v, Velocity of molecule (m/s) 
+velocity : 450         #v, Velocity of molecule (m/s) 
 dipole : 1.62          #μ, Dipole of molecule (D)
 j : 1                  #j, rotational energy level
 m : 1                  #m, magnetic quantum number, generally m = |j|

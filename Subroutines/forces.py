@@ -1,5 +1,3 @@
-import numpy as np
-
 from math import sqrt
 
 #Speed of light
@@ -25,7 +23,6 @@ def first_order(d,n,r0):
         k = epi * omega
     
     w_e = {}
-    sqc, invc = [], []
     #Equation from Ref. 2 pg 124
     #interaction energy (w) in units of cm^-1 (cm_1)
     #E = (m^2 * kg * s_3 * A_1) / cm_1, dip = C * m => A * s * m
@@ -33,12 +30,13 @@ def first_order(d,n,r0):
         #Does the molecule have inversion or doublet splitting?
         try: 
             #w_inv in units of cm_1, multiply by hc to get m^3 * kg * s_2 * cm_1
-            w_inv = d['w_inv'] * hc
-            l = ((w_inv) / 2) ** 2
+            w_inv = d['w_inv'] * hc * 100 # In Joules
+            l = (w_inv / 2) ** 2
             #r in units of m^3 * kg * s_2 * cm_1
-            r = ((dip * E) * ((m * k) / (j * (j + 1)))) ** 2
-            w = (l + r)**0.5
-            w_e[E] = w / hc # convert J to cm-1
+            r = ((dip * E * 100) * ((m * k) / (j * (j + 1)))) ** 2
+            w = (l + r)**0.5 
+            w = (-w_inv / 2) + w
+            w_e[E] = w / hc / 100 # convert J to cm-1
 
         #If no splitting use generic first order stark equation
         except KeyError:
@@ -47,15 +45,7 @@ def first_order(d,n,r0):
             #divide by hc to obtain units in cm_1
             w_e[E] = w / hc
 
-        #To apply multipole effects introduce mass, radius, and size (n) = s_2
-        #Get units of s_1 (in this case E = U so units of m^3 * kg * s_2)
-        #See Ref. 1 for additional details (pg. 7666 - 7667)
-        s_1 = sqrt(w * ((n * (n-1)) / (mass * r0 * r0 * r0)))
-        sqc.append(s_1)
-        #get units of s by taking the inverse of s_1
-        s = 1 / s_1
-        invc.append(s)
-    return w_e, sqc, invc
+    return w_e
 
 def second_order(d,n,r0):
     #Pull variables from dict
@@ -82,7 +72,6 @@ def second_order(d,n,r0):
     dip2 = dip * dip
     thcb = 2 * h * c * b
     w_e = {}
-    sqc, invc = [], []
     #Equation from Ref. 2 pg 124
     #interaction energy (w) in units of cm^-1 (cm_1)
     #E = (m^2 * kg * s_3 * A_1) / cm_1, dip = C * m => A * s * m
@@ -91,16 +80,7 @@ def second_order(d,n,r0):
         w = abs(((dip2 * E * E) / thcb) * w2)
         #divide by hc to obtain units in cm_1
         w_e[E] = w / hc
-        #To apply multipole effects introduce mass, radius, and size (n) = s_2
-        #Get units of s_1 (in this case E = U so units of m^3 * kg * s_2)
-        #See Ref. 1 for additional details (pg. 7666 - 7667)
-        s_1 = sqrt(w * ((n * (n-1)) / (mass * r0 * r0 * r0)))
-        sqc.append(s_1)
-        #get units of s by taking the inverse of s_1
-        try: s = 1 / s_1
-        except ZeroDivisionError: s = 0
-        invc.append(s)
-    return w_e, sqc, invc
+    return w_e
 
 def calculate_a(d,n,r0):
     '''

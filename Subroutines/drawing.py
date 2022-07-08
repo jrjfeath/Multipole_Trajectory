@@ -17,6 +17,7 @@ class d2_drawing():
         #What are we converting to? m -> mm * 1000, m -> cm *100, etc
         self.scale = scale
         self.colour = colour
+        self.length = 0
 
     def draw_multipole(self,x,y):
         '''
@@ -90,6 +91,7 @@ class d2_drawing():
         #Add collision distance to total
         cxl+=md['lcollision']
         self.draw_collision(cxl)
+        self.length = cxl
 
     def destroy(self):
         plt.close(self.fig)
