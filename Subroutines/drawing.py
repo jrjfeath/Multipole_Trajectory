@@ -5,7 +5,7 @@ class d2_drawing():
     '''
     Make a class to handle drawing the 2d trajectory plots.
     '''
-    def __init__(self,scale=1000,colour='black'):
+    def __init__(self,scale=1000,colour='black',mc='purple'):
         self.fig = plt.figure()
         self.fig.set_size_inches(10.5, 5.5)
         self.y_plot = self.fig.add_subplot(121)
@@ -17,6 +17,7 @@ class d2_drawing():
         #What are we converting to? m -> mm * 1000, m -> cm *100, etc
         self.scale = scale
         self.colour = colour
+        self.molecule_color = mc
         self.length = 0
 
     def draw_multipole(self,x,y):
@@ -39,10 +40,10 @@ class d2_drawing():
         xd = np.array(xd) * self.scale
         yd = np.array(yd) * self.scale
         zd = np.array(zd) * self.scale
-        self.y_plot.plot(xd,yd,color=self.colour, alpha=0.2)
-        self.z_plot.plot(xd,zd,color=self.colour, alpha=0.2)
+        self.y_plot.plot(xd,yd,color=self.molecule_color, alpha=0.005)
+        self.z_plot.plot(xd,zd,color=self.molecule_color, alpha=0.005)
 
-    def draw_collision(self,length,d=0.001):
+    def draw_collision(self,length,d=0.0005):
         '''
         Draw the area representing the collision area.
         '''

@@ -177,7 +177,7 @@ def scan_trajectory(d):
             gp, positions, cpi = record_data(mtraj,entered,cpi,gp,positions)
         else:
             #Collision regions is a 1mm * 1mm area, hence the r0 = 0.001
-            traj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),0.001,adjust=True,return_entered=True)
+            traj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),0.0005,adjust=True,return_entered=True)
             gp, positions, cpi = record_data(traj,entered,cpi,gp,positions)
 
     track = np.argwhere(gp == cpi)[:,0]
