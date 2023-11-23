@@ -4,7 +4,7 @@ from Subroutines.read_input import setup
 from Subroutines.scan_voltage_opt import scan_trajectory
 from Subroutines.scan_voltage_opt import scan_voltage
 
-cwd = os.getcwd()
+cwd = os.path.dirname(__file__)
 
 filename = '/Samples/NO-Parameters.yaml'
 

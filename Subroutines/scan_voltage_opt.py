@@ -77,9 +77,13 @@ def scan_trajectory(d):
     start = time.time()
     increment = 0.001 # 1mm
     #Generate a 2d and 3d plot classes for plotting our data
-    d2 = drawing.d2_drawing()
+    if d['plot_2d_t'] == True: 
+        d2 = drawing.d2_drawing()
+        d2.find_poles_and_collision(d)
     #Find the distances to draw multipoles and collision area
-    d2.find_poles_and_collision(d)
+    if d['plot_3d_t'] == True: 
+        d3 = drawing.d3_drawing()
+        d3.multipole_radius(d)
     #Create position data (px:(py,pz)) for each trajectory (vest)
     positions = np.empty((int(round(d2.length,3)*1000)+1,d['vest'],2))
     positions[:,:] = np.NAN
@@ -190,7 +194,22 @@ def scan_trajectory(d):
     shown = d['traj']
     if d['vest'] < shown: shown = d['vest']
     for i in range(shown):
-        d2.draw_molecule(increments, positions[:,i,0], positions[:,i,1])
+        rc = np.random.choice((-1,1))
+        if d['plot_2d_t'] == True: 
+            y = positions[:,i,0]
+            z = positions[:,i,1]
+            yz = (y ** 2 + z ** 2) ** 0.5
+            yz = yz * rc
+            d2.draw_molecule(increments, yz, positions[:,i,1])
+        if d['plot_3d_t'] == True: 
+            d3.draw_molecule(increments, positions[:,i,0], positions[:,i,1])
+    y, z = positions[-1,:,0], positions[-1,:,1]
+    yz = (y ** 2 + z ** 2) ** 0.5
+    yz = yz[np.invert(np.isnan(yz))]
+    poo, bins = np.histogram(yz,bins=30)
+    bins = bins[:-1] + np.diff(bins)
+    hist = drawing.hist_coll()
+    hist.draw_hist(bins,poo)
 
     drawing.draw_plot()
 
@@ -267,6 +286,8 @@ def scan_voltage(d):
     x = [i for i in d['V']]
     y = [(len(i) / entered) * 100 for i in trajs]
     plot.draw(x,y)
+    for i, v in enumerate(x):
+        print(v,y[i])
 
     drawing.draw_plot()  
     #Destroy the plot in the event user runs multiple scan commands

@@ -31,10 +31,10 @@ def first_order(d,n,r0):
         try: 
             #w_inv in units of cm_1, multiply by hc to get m^3 * kg * s_2 * cm_1
             w_inv = d['w_inv'] * hc * 100 # In Joules
-            l = w_inv ** 2
+            l = (w_inv / 2) ** 2
             #r in units of m^3 * kg * s_2 * cm_1
             r = ((dip * E * 100) * ((m * k) / (j * (j + 1)))) ** 2
-            w = (l + r)**0.5 
+            w = (l + r)**0.5
             w = (-w_inv / 2) + w
             w_e[E] = w / hc / 100 # convert J to cm-1
 

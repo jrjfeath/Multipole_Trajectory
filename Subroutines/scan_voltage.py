@@ -128,9 +128,9 @@ def scan_voltage(d):
             #to the next part of the setup
             lsource = ldist
 
-    for index, row in enumerate(densities):
-        #print(d['V'][index],row)
-        pass
+    #for index, row in enumerate(densities):
+    #    print(d['V'][index],row)
+    #    pass
 
     #Plot the data
     x = [x for x in d['V']]

@@ -31,7 +31,7 @@ calcv : True           #Calculate the optimum voltage on the multipole (T/F)
 vest : 1000            #Number of ions/molecules to use when estimating voltages
 
 #Do you want to determine the trajectory of species in your setup?
-calct : False          #Calculate the trajectory through the multipole (T/F)
+calct : True          #Calculate the trajectory through the multipole (T/F)
 setV : 10800           #if calct True, specify optimal voltage here
 traj : 200             #Number of ions/molecules to fly through setup
 plot_2d_t : True       #Plot trajectories on a 2d plot

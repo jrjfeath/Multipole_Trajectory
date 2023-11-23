@@ -125,7 +125,7 @@ def scan_trajectory(md):
             velocity['vy'] = velyf
             velocity['vz'] = velzf
 
-        if check_radial_position(0.001,yd[-1],zd[-1]) == 1: crashed = True
+        if check_radial_position(0.00005,yd[-1],zd[-1]) == 1: crashed = True
         
         d2.draw_molecule(xd, yd, zd)
         d3.draw_molecule(xd, yd, zd)
