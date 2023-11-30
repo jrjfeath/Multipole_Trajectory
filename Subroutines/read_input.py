@@ -46,9 +46,20 @@ def setup(filename):
     d['lsource']/=1000
     d['lcollision']/=1000
 
+    #Check if molecule is linear
+    if d['k'] == 0: 
+        epi, omega = d['epi'], d['omega']
+        d['k'] = epi * omega
+
+    #Calculate kappa value
+    d['kappa'] = (d['m'] * d['k']) / (d['j'] * (d['j'] + 1))
+    #Check if the user has specified lambda doublet splitting
+    if 'w_inv' not in d: d['w_inv'] = 0
+    d['w_inv'] *= (hc * 100) # In Joules
+
     #Check if user wants to scan voltages, if true make a list containing voltages
     if d['calcv'] == True: 
-        d['V'] = range(d['Vstart'],d['Vfinal']+1,d['Vstep'])
+        d['V'] = np.array(range(d['Vstart'],d['Vfinal']+1,d['Vstep']))
     else: 
         d['V'] = [d['setV']]
 
@@ -56,57 +67,25 @@ def setup(filename):
     counts = 1 #How many densities to keep track of?
     #Precalculate the values of the force applied by multipole (c)
     #key corresponds to each respective multipole
+    dip, mass = d['dipole'], d['mass']
     for key in d['multipole']:
+        #fetch multipole parameters
         m = d['multipole'][key]
-        n = m['size'] / 2 #Half the size of the multipole, i.e n = 3 for hexapole
-        r0 = (m['d0'] / 2) / 1000 #Radius of the multipole
-        m['r0'] = r0
-
-        #Determine the force of the multipole on the species, check if molecule or ion
-        if d['charge'] != 0: 
-            sqc, invc = forces.calculate_d(d,n,r0)
-        else: 
-            #Calculate the first and second stark effects and add them
-            w_e1 = forces.first_order(d,n,r0)
-            w_e2 = forces.second_order(d,n,r0)
-            
-            #Add the stark effects together
-            w = {}
-            sqc, invc = [], []
-            for E in d['V']:
-                w[E] = w_e1[E] + w_e2[E]
-                #To apply multipole effects introduce mass, radius, and size (n) = s_2
-                #Get units of s_1 (in this case E = U so units of m^3 * kg * s_2)
-                #See Ref. 1 for additional details (pg. 7666 - 7667)
-                s_1 = np.sqrt(w[E] * hc * ((n * (n-1)) / (d['mass'] * r0 * r0 * r0)))
-                sqc.append(s_1)
-                #get units of s by taking the inverse of s_1
-                if s_1 == 0.0:
-                    s = 0
-                else:
-                    s = 1 / s_1
-                invc.append(s)
-            
-            if d['Stark_Calculated'] == False:
-                #Write to the string holding stark data
-                strg = 'Voltage, 1st Stark (cm-1), 2nd Stark (cm-1)\n'
-                for key in w_e1.keys():
-                    strg += '{:05d},{:06f},{:06f}\n'.format(key,w_e1[key],w_e2[key])
-                
-                #Write stark data to stark.csv
-                with open(f'{d["filename"][:-5]}-Stark.csv','w') as opf:
-                    opf.write(strg)
-                d['Stark_Calculated'] = True
-
-        m['sqc'] = sqc
-        m['invc'] = invc
+        #Convert diameter to m and then divide by 2 for radius
+        r0, size = m['d0'] / (2 * 1000), m['size']
+        #Calculate the unchanging parts of the acceleration equation for multipoles
+        m['f1'] = (size * dip * d['kappa'] * d['V']) / (mass * r0 * r0 * r0)
+        f2 = (d['w_inv'] * r0 * r0 * r0) / (size * dip * d['kappa'] * d['V'])
+        #If the user checks 0 volts then f2 will equal negative infinity
+        f2[f2 == -np.inf] = 0
+        m['f2'] = f2
 
         #Convert lengths to meters
         m['lpole']/=1000
         m['ldist']/=1000
-        if m.get('pin_pos') != None: m['pin_pos']/=1000
-        if m.get('pin_r') != None: m['pin_r']/=1000
-        if m.get('pinhole') == True: counts+=1
+        if 'pin_pos' in m: m['pin_pos']/=1000
+        if 'pin_r' in m: m['pin_r']/=1000
+        if 'pinhole' in m: counts+=1
         counts+=2
     d['counts'] = counts
 

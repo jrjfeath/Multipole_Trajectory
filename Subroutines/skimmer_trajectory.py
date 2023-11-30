@@ -1,25 +1,13 @@
 import numpy as np
 
 def skimmer_trajectory(d):
-    '''
-    Determine the trajectory of molecules out of the skimmer.\n
-    Returns a dictionary containing the velocity in the x, y, and z directions.\n
-    Additionally returns the off axis position of the molecules.\n
-    traj = [vx,vy,vz,ry,rz]
-    '''
     #Calculate a random gaussian velocity based around theoretical velocity
     grnd = np.random.normal(0, 1, d['vest']) #gaussian random +/- 2.5
-    urnd = np.random.uniform(0, 1, d['vest']) #uniform random distribution
     grnda = grnd * d['fwhmsk'] #Calculate angle of molecules
-    vel = d['velocity'] + (grnd * d['fwhmv']) #Calculate velocity towards collision
-    
-    #Calculate a uniform float between 0,1 to simulate an even distribution
-    #of velocity angles, multiply by 2pi to get -/+ angles
-    urnda = urnd * d['tpi']
-    #Calculate velocities in the y & z directions
-    vy = vel * np.sin(grnda) * np.sin(urnda) 
-    vz = vel * np.sin(grnda) * np.cos(urnda)
-    
+    vel = d['velocity'] + (grnd * d['fwhmv']) #Calculate total velocity
+    rv = vel * np.sin(grnda) #Calculate radial velocity
+    lv = vel * np.cos(grnda) #Calculated longitudinal velocity
+
     cy, cz = d.get('skmr_pos') #Grab off-axis positions
     dist = d.get('skmr_dist') #Check what kind of distribution was selected
     skmr_r = d.get('skmr_radius') * 1000 #Grab skimmer radius
@@ -42,7 +30,9 @@ def skimmer_trajectory(d):
     if dist == 'u':
         ry = cy + np.random.uniform(-skmr_r, skmr_r, d['vest']) / 1000
         rz = cz + np.random.uniform(-skmr_r, skmr_r, d['vest']) / 1000
+    #Calculate the radial position
+    rp = (ry ** 2 + rz ** 2)**0.5
 
-    traj = np.stack((vel,vy,vz,ry,rz), axis=-1)
+    traj = np.stack((lv,rv,rp), axis=-1)
 
     return traj

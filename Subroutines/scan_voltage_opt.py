@@ -6,27 +6,28 @@ import Subroutines.drawing as drawing
 
 from Subroutines.skimmer_trajectory import skimmer_trajectory
 
-def within_boundry(ry,rz,r0):
-    '''Calculate if atom/molecule is within specified boundry.'''
-    #Radial position
-    rint = (ry * ry) + (rz * rz)      
-    #Check if molecules within specified boundry
-    entered = np.argwhere(rint < (r0 * r0))
-    return entered
+#Speed of light
+c = 299792458  #m * s_1
+#Plank's constant
+h = 6.626068e-34 #m^2 * kg * s_1
+hbar = 1.05457148e-34 #m^2 * kg * s_1 = (h/2pi)
+hc = h * c #m^3 * kg * s_2
 
-def within_linear_boundry(time,traj,r=0.001,adjust=False,return_entered=False):
+def within_boundry(rp,r0):
+    '''Calculate if atom/molecule is within specified boundry.'''    
+    #Check if molecules within specified boundry
+    return np.argwhere(rp < r0)
+
+def within_linear_boundry(time,traj,r=0.001,adjust=True,return_entered=False):
     '''Calculate linear trajectory and see if it is within bounds.'''
-    #Calculate off-axis position
-    ry = (traj[:,1] * time) + traj[:,3]
-    rz = (traj[:,2] * time) + traj[:,4]
+    #Calculate radial position
+    rp = (traj[:,1] * time) + traj[:,2]
 
     #Check if molecules within specified boundry
-    entered = within_boundry(ry,rz,r)
+    entered = within_boundry(rp,r)
 
-    #Depending on position we may want to overwrite data
-    if adjust == True:
-        traj[:,3] = ry
-        traj[:,4] = rz
+    #Overwrite the radial position of the ion events
+    if adjust == True: traj[:,2] = rp
 
     if return_entered == True:
         return traj, entered
@@ -44,7 +45,7 @@ def within_multipole_boundry(time,traj,sqc,invc,r=0.001,adjust=False,return_ente
     #Only keep trajectories that enter
     entered = within_boundry(ry,rz,r)
 
-    #Calculate vy (1) & vz (2) (radial velocity) after exiting multipole
+    #Calculate vy (1) & vz (2) (radial velocity) when exiting multipole :)
     if adjust == True:
         traj[:,1] = (traj[:,1] * np.cos(sqc * time)) - (traj[:,3] * sqc * np.sin(sqc * time))
         traj[:,2] = (traj[:,2] * np.cos(sqc * time)) - (traj[:,4] * sqc * np.sin(sqc * time))
@@ -105,10 +106,10 @@ def scan_trajectory(d):
         if px == d['lskimmer']: r0 = d['skmr_radius']
         #Overwrite position (cpi) index for all trajectories
         if px != increments[-1]:
-            mtraj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),r0,adjust=True,return_entered=True)
+            mtraj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),r0,return_entered=True)
             gp, positions, cpi = record_data(mtraj,entered,cpi,gp,positions)
         else:
-            traj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),r0,adjust=True,return_entered=True)
+            traj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),r0,return_entered=True)
             gp, positions, cpi = record_data(traj,entered,cpi,gp,positions)
         #Reset radius after checking collision with skimmer
         if px == d['lskimmer']: r0 = 1
@@ -119,10 +120,10 @@ def scan_trajectory(d):
         tohex = px / traj[:,0]
         #Overwrite position (cpi) index for all trajectories
         if px != increments[-1]:
-            mtraj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),1,adjust=True,return_entered=True)
+            mtraj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),1,return_entered=True)
             gp, positions, cpi = record_data(mtraj,entered,cpi,gp,positions)
         else:
-            traj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),1,adjust=True,return_entered=True)
+            traj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),1,return_entered=True)
             gp, positions, cpi = record_data(traj,entered,cpi,gp,positions)
 
     #Loop through each multipole
@@ -139,13 +140,13 @@ def scan_trajectory(d):
             if px != increments[-1]:
                 #If invc == 0 that means the molecule has no dipole and is not effected by the multipole
                 if invc == 0:
-                    mtraj, entered = within_linear_boundry(thex,copy.deepcopy(traj),r0,adjust=True,return_entered=True)
+                    mtraj, entered = within_linear_boundry(thex,copy.deepcopy(traj),r0,return_entered=True)
                 else:
                     mtraj, entered = within_multipole_boundry(thex,copy.deepcopy(traj),sqc,invc,r0,adjust=False,return_entered=True)
                 gp, positions, cpi = record_data(mtraj,entered,cpi,gp,positions)
             else:
                 if invc == 0:
-                    traj, entered = within_linear_boundry(thex,copy.deepcopy(traj),r0,adjust=True,return_entered=True)
+                    traj, entered = within_linear_boundry(thex,copy.deepcopy(traj),r0,return_entered=True)
                 else:
                     traj, entered = within_multipole_boundry(thex,copy.deepcopy(traj),sqc,invc,r0,adjust=True,return_entered=True)
                 gp, positions, cpi = record_data(traj,entered,cpi,gp,positions)
@@ -163,10 +164,10 @@ def scan_trajectory(d):
             if px == pin_dist: r0 = p['pin_r']
             #Overwrite position (cpi) index for all trajectories
             if px != increments[-1]:
-                mtraj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),r0,adjust=True,return_entered=True)
+                mtraj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),r0,return_entered=True)
                 gp, positions, cpi = record_data(mtraj,entered,cpi,gp,positions)
             else:
-                traj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),r0,adjust=True,return_entered=True)
+                traj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),r0,return_entered=True)
                 gp, positions, cpi = record_data(traj,entered,cpi,gp,positions)
             #After we check if collision into pinhole reset to original multipole radius
             if px == pin_dist: r0 = p['r0']
@@ -177,11 +178,11 @@ def scan_trajectory(d):
         tohex = px / traj[:,0]
         #Overwrite position (cpi) index for all trajectories
         if px != increments[-1]:
-            mtraj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),r0,adjust=True,return_entered=True)
+            mtraj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),r0,return_entered=True)
             gp, positions, cpi = record_data(mtraj,entered,cpi,gp,positions)
         else:
             #Collision regions is a 1mm * 1mm area, hence the r0 = 0.001
-            traj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),0.0005,adjust=True,return_entered=True)
+            traj, entered = within_linear_boundry(tohex,copy.deepcopy(traj),0.0005,return_entered=True)
             gp, positions, cpi = record_data(traj,entered,cpi,gp,positions)
 
     track = np.argwhere(gp == cpi)[:,0]
@@ -227,22 +228,32 @@ def scan_voltage(d):
     plot = drawing.voltage_plot()
 
     #Calculate an initial trajectory for each of our molecules
-    #traj columns are as follows: vel, vy, vz, ry, rz
+    #traj columns are as follows: longitudinal velocity, radial velocity, radial position
     traj = skimmer_trajectory(d)
 
     #Check if trajectory hits skimmer
     toskim = d['lskimmer'] / traj[:,0]
-    #Check ry (3) & rz (4) (position) at skimmer
-    traj = within_linear_boundry(toskim,traj,d['skmr_radius'],adjust=True)
+    #Check radial position at skimmer
+    traj = within_linear_boundry(toskim,traj,r=d['skmr_radius'])
 
     #Calculate time taken to reach multipole from skimmer
     tohex = d['lsource'] / traj[:,0]
-    #Check ry (3) & rz (4) (position) at start of multipole
-    traj = within_linear_boundry(tohex,traj,1,adjust=True)
+    #Check radial position at start of multipole
+    traj = within_linear_boundry(tohex,traj,1)
 
     entered = len(traj)
 
-    trajs  = [copy.deepcopy(traj) for _ in d['V']]
+    for key in d['multipole']:
+        m = d['multipole'][key]
+        for vi, v0 in enumerate(d['V']):
+            vf1 = m['f1'][vi]
+            vf2 = m['f2'][vi]
+            for t in np.arange(1e-9,1e-8,1e-9):
+                #Calculate the radial acceleration of the molecule
+                ar = (traj[:,-1] * vf1) * (1 / (1 + (vf2 / traj[:,-1]**2)**2)**0.5)
+                print(ar.shape)
+                break
+    return
 
     #Loop through each multipole
     for mindex, m in enumerate(d['multipole']):
@@ -271,7 +282,7 @@ def scan_voltage(d):
             #Distance to a subsequent multipole
             if dist != 0:
                 tcol = dist / traj[:,0]
-                traj = within_linear_boundry(tcol,traj,1,adjust=True)
+                traj = within_linear_boundry(tcol,traj,1)
 
             trajs[ti] = traj
 
