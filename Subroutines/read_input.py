@@ -2,7 +2,6 @@ import math
 import os
 import sys
 import yaml
-import Subroutines.forces as forces
 import numpy as np
 
 def setup(filename):
@@ -52,20 +51,29 @@ def setup(filename):
         d['k'] = epi * omega
 
     #Calculate kappa value
-    d['kappa'] = (d['m'] * d['k']) / (d['j'] * (d['j'] + 1))
+    d['kappa'] = d['m'] * d['k'] / (d['j'] * (d['j'] + 1))
     #Check if the user has specified lambda doublet splitting
     if 'w_inv' not in d: d['w_inv'] = 0
     d['w_inv'] *= (hc * 100) # In Joules
 
-    #Check if user wants to scan voltages, if true make a list containing voltages
+    #Create lists for scanning voltage
+    if d.get('setV'): 
+        d['V'] = [d['setV']]
+    else:
+        d['V'] = [0]
+    d['Vindex'] = 0
+    #If the user is scanning a set of voltages
     if d['calcv'] == True: 
         d['V'] = np.array(range(d['Vstart'],d['Vfinal']+1,d['Vstep']))
-    else: 
-        d['V'] = [d['setV']]
+    #If the user is checking the trajectories of a specific voltage
+    if d['calct'] == True:
+        try: d['Vindex'] = np.where(d['V'] == d['setV'])[0][0]
+        except IndexError: 
+            d['V'] = np.sort(np.append(d['V'],d['setV']))
+            d['Vindex'] = np.where(d['V'] == d['setV'])[0][0]
 
     #Determine and modify multipole variables
     counts = 1 #How many densities to keep track of?
-    #Precalculate the values of the force applied by multipole (c)
     #key corresponds to each respective multipole
     dip, mass = d['dipole'], d['mass']
     for key in d['multipole']:
@@ -73,12 +81,13 @@ def setup(filename):
         m = d['multipole'][key]
         #Convert diameter to m and then divide by 2 for radius
         r0, size = m['d0'] / (2 * 1000), m['size']
+        d['multipole'][key]['r0'] = r0
         #Calculate the unchanging parts of the acceleration equation for multipoles
-        m['f1'] = (size * dip * d['kappa'] * d['V']) / (mass * r0 * r0 * r0)
+        m['f1'] = ((size * dip * d['kappa'] * (d['V']) ) / (r0 * r0 * r0)) 
         f2 = (d['w_inv'] * r0 * r0 * r0) / (size * dip * d['kappa'] * d['V'])
         #If the user checks 0 volts then f2 will equal negative infinity
         f2[f2 == -np.inf] = 0
-        m['f2'] = f2
+        m['f2'] = f2 
 
         #Convert lengths to meters
         m['lpole']/=1000

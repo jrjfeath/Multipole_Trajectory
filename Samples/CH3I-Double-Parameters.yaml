@@ -1,3 +1,6 @@
+#Control the seed of the calculation, set to null for random seed
+seed: null
+
 #Molecule/Ion information |j = n, m = |j|, Ω = Σ + Λ, ε = -1 (f)>
 charge: 0              #q, charge of species
 mass : 142             #m, Mass of molecule (u)
@@ -25,6 +28,7 @@ fwhmsk : 0.8           #Width of the skimmer angles (degrees), see additional in
 lskimmer : 30          #Distance from valve to skimmer
 lsource : 80           #Source Length (mm), Distance from skimmer to multipole
 lcollision : 100      #Distance from end of last multipole to collision area (mm)
+crr : 0.001            #Radius of the collision region (m)
 
 #Do you want to determine an optimal voltage?
 calcv : True           #Calculate the optimum voltage on the multipole (T/F)

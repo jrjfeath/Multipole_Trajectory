@@ -40,17 +40,16 @@ class d2_drawing():
         self.y_plot.text(x[0],y[0]+0.1,label)
         self.y_plot.plot(x,-y,color=self.colour)
 
-    def draw_molecule(self,xd,yd,zd):
+    def draw_molecule(self,xd,yd):
         '''
         Draw in the molecule position.
         '''
         #Convert the measurements from meters to mm
         xd = np.array(xd) * self.scale
         yd = np.array(yd) * self.scale
-        zd = np.array(zd) * self.scale
         self.y_plot.plot(xd,yd,color=self.molecule_color, alpha=0.02)
 
-    def draw_collision(self,length,d=0.00005):
+    def draw_collision(self,length,d=0.001):
         '''
         Draw the area representing the collision area.
         '''
@@ -96,7 +95,7 @@ class d2_drawing():
         self.y_plot.set_ylim(ymin=-mr, ymax=mr)
         #Add collision distance to total
         cxl+=md['lcollision']
-        self.draw_collision(cxl)
+        self.draw_collision(cxl,md['crr'])
         self.length = cxl
 
     def destroy(self):

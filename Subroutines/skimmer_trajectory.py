@@ -1,6 +1,9 @@
 import numpy as np
 
 def skimmer_trajectory(d):
+    if d.get('seed'):
+        if d['seed'] != None: 
+            np.random.seed('seed')
     #Calculate a random gaussian velocity based around theoretical velocity
     grnd = np.random.normal(0, 1, d['vest']) #gaussian random +/- 2.5
     grnda = grnd * d['fwhmsk'] #Calculate angle of molecules
