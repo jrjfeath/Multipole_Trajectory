@@ -3,13 +3,12 @@ import numpy as np
 def skimmer_trajectory(d):
     if d.get('seed'):
         if d['seed'] != None: 
-            np.random.seed('seed')
+            np.random.seed(d['seed'])
     #Calculate a random gaussian velocity based around theoretical velocity
-    grnd = np.random.normal(0, 1, d['vest']) #gaussian random +/- 2.5
-    grnda = grnd * d['fwhmsk'] #Calculate angle of molecules
-    vel = d['velocity'] + (grnd * d['fwhmv']) #Calculate total velocity
-    rv = vel * np.sin(grnda) #Calculate radial velocity
-    lv = vel * np.cos(grnda) #Calculated longitudinal velocity
+    vel = np.random.normal(d['velocity'], d['velocity_std'], d['vest']) #Calculate total velocity
+    grnd = np.random.normal(0, d['skmr_std'], d['vest']) #Calculate angle of molecules
+    rv = vel * np.sin(grnd) #Calculate radial velocity
+    lv = vel * np.cos(grnd) #Calculated longitudinal velocity
 
     cy, cz = d.get('skmr_pos') #Grab off-axis positions
     dist = d.get('skmr_dist') #Check what kind of distribution was selected
@@ -34,7 +33,7 @@ def skimmer_trajectory(d):
         ry = cy + np.random.uniform(-skmr_r, skmr_r, d['vest']) / 1000
         rz = cz + np.random.uniform(-skmr_r, skmr_r, d['vest']) / 1000
     #Calculate the radial position
-    rp = (ry ** 2 + rz ** 2)**0.5
+    rp = np.random.choice([-1, 1], d['vest']) * (ry ** 2 + rz ** 2)**0.5
 
     traj = np.stack((lv,rv,rp), axis=-1)
 

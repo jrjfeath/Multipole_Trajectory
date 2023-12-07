@@ -1,33 +1,26 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
-class hist_coll():
-    def __init__(self,scale=1000,colour='black',mc='purple'):
-        self.fig = plt.figure()
-        self.fig.set_size_inches(5.5, 5.5)
-        self.rad = self.fig.add_subplot(111)
-        self.scale = scale
-
-    def draw_hist(self,x,y):
-        self.rad.plot(x * self.scale,y)
-        self.rad.set_xlabel('Radius (mm)')
-        self.rad.set_ylabel('Intensity')
             
 class d2_drawing():
     '''
     Make a class to handle drawing the 2d trajectory plots.
     '''
     def __init__(self,scale=1000,colour='black',mc='purple'):
-        self.fig = plt.figure()
-        self.fig.set_size_inches(5.5, 5.5)
-        self.y_plot = self.fig.add_subplot(111)
+        # Create two subplots
+        _, (self.y_plot, self.rad) = plt.subplots(1, 2, figsize=(10, 5))
         self.y_plot.set_xlabel('Distance travelled (mm)')
         self.y_plot.set_ylabel('Radius (mm)')
+        self.rad.set_xlabel('Radius (mm)')
+        self.rad.set_ylabel('Counts')
         #What are we converting to? m -> mm * 1000, m -> cm *100, etc
         self.scale = scale
         self.colour = colour
         self.molecule_color = mc
         self.length = 0
+        plt.tight_layout()
+
+    def draw_hist(self,bins,y):
+        self.rad.hist(y, bins=bins, color=self.colour, histtype='step')
 
     def draw_multipole(self,x,y,label):
         '''

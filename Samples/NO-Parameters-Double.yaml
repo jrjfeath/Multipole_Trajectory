@@ -4,10 +4,10 @@ seed: null
 #Molecule/Ion information |j = n, m = |j|, Ω = Σ + Λ, ε = -1 (f)>
 mass : 30              #m, Mass of molecule (u)
 velocity : 625         #v, Velocity of molecule (m/s)
-velocity_std : 10.0     #Width of the velocity (m/s)
+velocity_std : 1.0     #Width of the velocity (m/s)
 dipole : 0.1585        #μ, Dipole of molecule (D)
-j : 1.5                #j, rotational energy level
-m : 1.5                #m, magnetic quantum number, generally m = |j|
+j : 0.5                #j, rotational energy level
+m : 0.5                #m, magnetic quantum number, generally m = |j|
 k : 0                  #k, projection of total angular momentum
 b : 1.6961            #Rotational Constant (cm-1)
 epi : -1.0             #ε, lambda (Λ) doublet state, ε = -1 (f)
@@ -15,34 +15,40 @@ omega : 0.5            #Ω, spin-orbit quantum number, Ω = Σ + Λ
 w_inv : 0.01183666     #Lambda doublet splitting factor for j = 0.5 (cm-1)
 
 #Skimmer conditions
+skmr_radius : 0.5      #Skimmer radius in mm
 skmr_pos : [0,0]       #Centre position of molecules out of skimmer
 skmr_dist : "s"        #Distribution: single (s), uniform (u), gaussian (g) 
-skmr_radius : 0.5      #Skimmer radius in mm
 skmr_std : 0.3         #Width of the skimmer angles (degrees), see additional info
 
 #Instrument distances
 lskimmer : 30          #Distance from valve to skimmer
 lsource : 80           #Source Length (mm), Distance from skimmer to multipole
-lcollision : 1000      #Distance from end of last multipole to collision area (mm)
-crr : 0.002            #Radius of the collision region (m)
+lcollision : 250       #Distance from end of last multipole to collision area (mm)
+crr : 0.001            #Radius of the collision region (m)
 
 #Multipole information
 #Multiple systems can be included, an example of a single multipole and
 #dual multipole setup can be found in Addition info.
 multipole:
-  hexapole:
+  Hexapole:
     size: 6           #Size of multipole, i.e hexapole = 6
-    d0: 14.0          #Distance between rods (mm)
-    lpole: 1665       #Length of multipole rods (mm)
+    d0: 7.1           #Distance between rods (mm)
+    lpole: 300        #Length of multipole rods (mm)
+    ldist: 60        #Distance to the next multipole (mm)
+  Hexapole 2:
+    size: 6           #Size of multipole, i.e hexapole = 6
+    d0: 7.1           #Distance between rods (mm)
+    lpole: 300        #Length of multipole rods (mm)
     ldist: 0          #Distance to the next multipole (mm)
 
 #Do you want to determine an optimal voltage?
 vest : 1000           #Number of ions/molecules to use when estimating voltages/trajectories
 calcv : True          #Calculate the optimum voltage on the multipole (True/False)
 Vstart : 00000          #What voltage to start at, cannot = 0 (V)
-Vfinal : 30000        #What voltage to end on (V)
+Vfinal : 20000        #What voltage to end on (V)
 Vstep : 200            #What voltage to step by (V)
 calct : True           #Calculate the trajectory through the system (True/False)
-setV : 12000           #if calct True, specify optimal voltage here
+setV : 11000           #if calct True, specify optimal voltage here
 plot_2d_t : True       #Plot trajectories on a 2d plot
 plot_3d_t : False      #Plot trajectories on a 3d plot
+

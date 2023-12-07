@@ -33,11 +33,9 @@ def setup(filename):
     #Apply SI conversions
     d['mass']*=atomic_mass
     d['dipole']*=debye
-    d['charge']*=ec
-    d['Vfrequency'] = float(d['Vfrequency']) * d['tpi']
 
     #convert to radians
-    d['fwhmsk']*=(math.pi / 180.0) 
+    d['skmr_std']*=(math.pi / 180.0) 
 
     #Convert lengths into meters
     d['skmr_radius']/=1000
@@ -82,9 +80,11 @@ def setup(filename):
         #Convert diameter to m and then divide by 2 for radius
         r0, size = m['d0'] / (2 * 1000), m['size']
         d['multipole'][key]['r0'] = r0
+        if m.get('vset'): v_r = np.array([m['vset']])
+        else: v_r = d['V']
         #Calculate the unchanging parts of the acceleration equation for multipoles
-        m['f1'] = ((size * dip * d['kappa'] * (d['V']) ) / (r0 * r0 * r0)) 
-        f2 = (d['w_inv'] * r0 * r0 * r0) / (size * dip * d['kappa'] * d['V'])
+        m['f1'] = ((size * dip * d['epi'] * abs(d['kappa']) * v_r) / (r0 * r0 * r0)) 
+        f2 = (d['w_inv'] * r0 * r0 * r0) / (size * dip * d['kappa'] * v_r)
         #If the user checks 0 volts then f2 will equal negative infinity
         f2[f2 == -np.inf] = 0
         m['f2'] = f2 

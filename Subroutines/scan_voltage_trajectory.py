@@ -15,7 +15,7 @@ hc = h * c #m^3 * kg * s_2
 def outside_boundry(rp,r0):
     '''Calculate if atom/molecule is within specified boundry.'''    
     #Check if molecules outside specified boundry
-    return np.argwhere(abs(rp) > r0)
+    return np.argwhere(abs(rp) >= r0)
 
 def within_linear_boundry(time,traj,r=0.1):
     '''Calculate linear trajectory and see if it is within bounds.'''
@@ -55,7 +55,7 @@ def scan_voltage(d):
         d3.multipole_radius(d)
 
     start = time.time()
-    increment = 0.005 # 5mm
+    increment = 0.010 # 5mm
 
     #Calculate an initial trajectory for each of our molecules
     #traj columns are as follows: longitudinal velocity, radial velocity, radial position
@@ -101,16 +101,46 @@ def scan_voltage(d):
             for px in increments:
                 traj = within_multipole_boundry(t, t2, vf1, vf2, traj, d['mass'], m['r0'])
                 #If the user is tracking trajectory of a voltage
-                if vi == d['Vindex']:
+                if (vi == d['Vindex']) or (len(m['f1']) == 1):
                     x.append([start+px for _ in range(len(traj[:,2]))])
                     y.append(np.copy(traj[:,2]))
-            #Record the trajectory at the end of the multipole
-            trajs[vi] = traj
-            #Check if pinhole exists,
-            if m.get('pin_pos') != None:
+
+            #Check if pinhole exists
+            if m.get('pin_pos'):
                 tcol = m['pin_pos'] / traj[:,0]
-                traj = within_linear_boundry(tcol,traj,m['pin_r'])
+                traj = within_linear_boundry(tcol,traj)
+                #If the user is tracking trajectory of a voltage
+                if (vi == d['Vindex']) or (len(m['f1']) == 1):
+                    x.append([start+m['lpole']+m['pin_pos'] for _ in range(len(traj[:,2]))])
+                    y.append(np.copy(traj[:,2]))
+                #Determine which trajectories hit collision region
+                ob = outside_boundry(traj[:,2],m['pin_r'])
+                traj[ob] = np.array([np.nan,np.nan,np.nan])
+
+            #Check if there is a second multipole and the distance to it
+            if m.get('ldist'):
+                dist = m['ldist']
+                #If there is a pinhole subtract the distance calculated for that
+                if m.get('pin_pos'):
+                    tcol = (dist-m['pin_pos']) / traj[:,0]
+                else:
+                    tcol = dist / traj[:,0]
+                traj = within_linear_boundry(tcol,traj)
+                #If the user is tracking trajectory of a voltage
+                if (vi == d['Vindex']) or (len(m['f1']) == 1):
+                    x.append([start+m['lpole']+dist for _ in range(len(traj[:,2]))])
+                    y.append(np.copy(traj[:,2]))     
+
+            #If vset exists set all trajectories to match this voltage
+            if m.get('vset'):
+                trajs  = [copy.deepcopy(traj) for _ in d['V']]
+                break
+
+            #Record the trajectory at the end of the multipole & pinhole
+            trajs[vi] = traj
+
         start+=m['lpole']
+        if m.get('ldist'): start+=dist
 
     start+=d['lcollision']
     counts = []
@@ -121,6 +151,9 @@ def scan_voltage(d):
         if ti == d['Vindex']:
             x.append([start for _ in range(len(traj[:,2]))])
             y.append(np.copy(traj[:,2]))
+            #Plot histogram of rp at collision region
+            bins = np.arange(-d['crr'],d['crr']+d['crr']/10,d['crr']/10)
+            d2.draw_hist(bins,traj[:,2])
         #Determine which trajectories hit collision region
         ob = outside_boundry(traj[:,2],d['crr'])
         traj[ob] = np.array([np.nan,np.nan,np.nan])
@@ -136,7 +169,9 @@ def scan_voltage(d):
     if d['plot_2d_t'] == True:
         #Draw trajectories on plot
         d2.draw_molecule(np.array(x),np.array(y))
+
+    if d['plot_3d_t'] == True:
+        pass
+        # d3.draw_molecule(x,y,y)
     
-    drawing.draw_plot()  
-    #Destroy the plot in the event user runs multiple scan commands
-    plot.destroy()
+    drawing.draw_plot()
