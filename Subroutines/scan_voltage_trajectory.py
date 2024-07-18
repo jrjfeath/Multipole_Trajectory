@@ -13,9 +13,14 @@ hbar = 1.05457148e-34 #m^2 * kg * s_1 = (h/2pi)
 hc = h * c #m^3 * kg * s_2
 
 def outside_boundry(rp,r0):
-    '''Calculate if atom/molecule is within specified boundry.'''    
+    '''Calculate if atom/molecule is outside specified boundry.'''    
     #Check if molecules outside specified boundry
     return np.argwhere(abs(rp) >= r0)
+
+def within_boundry(rp,r0):
+    '''Calculate if atom/molecule is within specified boundry.'''    
+    #Check if molecules outside specified boundry
+    return np.argwhere(abs(rp) <= r0)
 
 def within_linear_boundry(time,traj,r=0.1):
     '''Calculate linear trajectory and see if it is within bounds.'''
@@ -114,7 +119,10 @@ def scan_voltage(d):
                     x.append([start+m['lpole']+m['pin_pos'] for _ in range(len(traj[:,2]))])
                     y.append(np.copy(traj[:,2]))
                 #Determine which trajectories hit collision region
-                ob = outside_boundry(traj[:,2],m['pin_r'])
+                if m['pin_r'] > 0:
+                    ob = outside_boundry(traj[:,2],m['pin_r'])
+                else:
+                    ob = within_boundry(traj[:,2],abs(m['pin_r']))
                 traj[ob] = np.array([np.nan,np.nan,np.nan])
 
             #Check if there is a second multipole and the distance to it

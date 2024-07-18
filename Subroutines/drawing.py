@@ -50,7 +50,7 @@ class d2_drawing():
         x = np.array([length,length]) * self.scale
         y = np.array([-d, d]) * self.scale
         self.y_plot.plot(x,y,color=self.colour)
-        self.y_plot.text(x[0] + 15,y[0] - 0.5,'Collision Region',rotation=90)
+        self.y_plot.text(x[0] + 15,0.0 - (y[1] / 2),'Collision Region',rotation=90)
 
     def draw_pinhole(self,length,radius,label):
         '''
@@ -61,6 +61,15 @@ class d2_drawing():
         self.y_plot.plot(x,y,color=self.colour)
         self.y_plot.text(x[0]+1,y[0]+1,label)
         self.y_plot.plot(x,-y,color=self.colour)
+
+    def draw_beam_block(self, length, radius, label):
+        '''
+        Draw the line representing the beam block.
+        '''
+        x = np.array([length, length]) * self.scale
+        y = np.array([radius, -radius]) * self.scale
+        self.y_plot.plot(x,y,color=self.colour)
+        self.y_plot.text(x[0]+15,y[1],label, rotation=90)
 
     def find_poles_and_collision(self,md):
         '''
@@ -81,7 +90,10 @@ class d2_drawing():
             #Add multipole distances to total
             cxl+=p['lpole']
             if p.get('pin_pos') != None:
-                self.draw_pinhole(cxl + p['pin_pos'],p['pin_r'],'Pinhole')
+                if p['pin_r'] > 0:
+                    self.draw_pinhole(cxl + p['pin_pos'],p['pin_r'],'Pinhole')
+                else:
+                    self.draw_beam_block(cxl + p['pin_pos'],abs(p['pin_r']),'Beam Block')
             cxl+=p['ldist']
         #Set bounds for drawing
         mr = (mr * 1000) + 0.5

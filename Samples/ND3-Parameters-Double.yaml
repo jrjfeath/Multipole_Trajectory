@@ -42,6 +42,8 @@ multipole:
     d0: 7.1           #Distance between rods (mm)
     lpole: 300        #Length of multipole rods (mm)
     ldist: 0          #Distance to the next multipole (mm)
+    pin_pos: 25       #Position of the pinhole after the multipole (mm)
+    pin_r: -0.7        #Radius of the pinhole in mm
 
 #Do you want to determine an optimal voltage?
 vest : 1000           #Number of ions/molecules to use when estimating voltages/trajectories
