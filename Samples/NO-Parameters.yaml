@@ -6,8 +6,8 @@ mass : 30              #m, Mass of molecule (u)
 velocity : 625         #v, Velocity of molecule (m/s)
 velocity_std : 10.0     #Width of the velocity (m/s)
 dipole : 0.1585        #μ, Dipole of molecule (D)
-j : 1.5                #j, rotational energy level
-m : 1.5                #m, magnetic quantum number, generally m = |j|
+j : 0.5                #j, rotational energy level
+m : 0.5                #m, magnetic quantum number, generally m = |j|
 k : 0                  #k, projection of total angular momentum
 b : 1.6961            #Rotational Constant (cm-1)
 epi : -1.0             #ε, lambda (Λ) doublet state, ε = -1 (f)

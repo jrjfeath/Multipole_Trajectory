@@ -91,7 +91,7 @@ def setup(filename):
 
         #Convert lengths to meters
         m['lpole']/=1000
-        m['ldist']/=1000
+        if 'ldist' in m: m['ldist']/=1000
         if 'pin_pos' in m: m['pin_pos']/=1000
         if 'pin_r' in m: m['pin_r']/=1000
         if 'pinhole' in m: counts+=1

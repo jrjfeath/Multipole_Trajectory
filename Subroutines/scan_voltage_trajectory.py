@@ -110,13 +110,17 @@ def scan_voltage(d):
                     x.append([start+px for _ in range(len(traj[:,2]))])
                     y.append(np.copy(traj[:,2]))
 
-            #Check if pinhole exists
-            if m.get('pin_pos'):
-                tcol = m['pin_pos'] / traj[:,0]
+            # If a pinhole exists check if traj passes
+            pinhole = 0.0
+            dist = 0.0
+            if 'pin_pos' in m:
+                dist = m['pin_pos']
+                pinhole = dist
+                tcol = dist / traj[:,0]
                 traj = within_linear_boundry(tcol,traj)
                 #If the user is tracking trajectory of a voltage
                 if (vi == d['Vindex']) or (len(m['f1']) == 1):
-                    x.append([start+m['lpole']+m['pin_pos'] for _ in range(len(traj[:,2]))])
+                    x.append([start+m['lpole']+dist for _ in range(len(traj[:,2]))])
                     y.append(np.copy(traj[:,2]))
                 #Determine which trajectories hit collision region
                 if m['pin_r'] > 0:
@@ -125,19 +129,18 @@ def scan_voltage(d):
                     ob = within_boundry(traj[:,2],abs(m['pin_r']))
                 traj[ob] = np.array([np.nan,np.nan,np.nan])
 
-            #Check if there is a second multipole and the distance to it
-            if m.get('ldist'):
+            # If another multipole exists check traj enters
+            if 'ldist' in m:
                 dist = m['ldist']
-                #If there is a pinhole subtract the distance calculated for that
-                if m.get('pin_pos'):
-                    tcol = (dist-m['pin_pos']) / traj[:,0]
+                if dist > pinhole:
+                    tcol = (dist-pinhole) / traj[:,0]
+                    traj = within_linear_boundry(tcol,traj)
+                    #If the user is tracking trajectory of a voltage
+                    if (vi == d['Vindex']) or (len(m['f1']) == 1):
+                        x.append([start+m['lpole']+dist for _ in range(len(traj[:,2]))])
+                        y.append(np.copy(traj[:,2]))
                 else:
-                    tcol = dist / traj[:,0]
-                traj = within_linear_boundry(tcol,traj)
-                #If the user is tracking trajectory of a voltage
-                if (vi == d['Vindex']) or (len(m['f1']) == 1):
-                    x.append([start+m['lpole']+dist for _ in range(len(traj[:,2]))])
-                    y.append(np.copy(traj[:,2]))     
+                    dist=pinhole
 
             #If vset exists set all trajectories to match this voltage
             if m.get('vset'):
@@ -147,10 +150,11 @@ def scan_voltage(d):
             #Record the trajectory at the end of the multipole & pinhole
             trajs[vi] = traj
 
-        start+=m['lpole']
-        if m.get('ldist'): start+=dist
-
-    start+=d['lcollision']
+        start+=(m['lpole']+dist)
+    
+    # Remove dist in the event a pinhole has been added
+    d['lcollision']-=dist
+    start+=(d['lcollision'])
     counts = []
     for ti, traj in enumerate(trajs):
         tcol = d['lcollision'] / traj[:,0]
